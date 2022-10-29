@@ -1,6 +1,6 @@
 
 //
-// The following include is standard practice..
+// The following include is standard practice.
 //
 #include "MailNotifier20221005.h"
 //
