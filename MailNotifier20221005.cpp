@@ -119,6 +119,7 @@ int     status  ;
 // constants won't change:
 const char* ssid     = "*" ; // Replace * by the name (SSID) for your network.
 const char* password = "*" ; // Replace * by the password    for your network.
+const char* triggerServer  = "*" ;
 const char* triggerRequest = "*" ;
 
 const unsigned long CONNECTION_WAIT_MILLIS = 5 * 1000UL ;
@@ -257,7 +258,13 @@ void setup()
 		debug.println(".") ;
 
 		debug.printf("\nBattery voltage is %f volts.\n", batteryVoltage) ;
-		debug.printf("Compiled on %s %s\n\n", __DATE__, __TIME__) ;
+		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
+		if (executionMode==normalExecution) {
+			debug.printf("Execution mode is normal.\n") ;
+		} else {
+			debug.printf("In reprogramming mode.\n") ;
+		}
+		debug.printf("==================================================\n\n") ;
 		debug.flush() ;
 
 #elif defined Ian_NoLocalDebugViaSocket
@@ -288,12 +295,20 @@ void setup()
 //				"GETting from maker.ifttt.com using \n%s\n\n",
 //				request,
 //				) ;
-		httpGet(
-				"maker.ifttt.com",
-				request,
+//		httpGet(
+//				"maker.ifttt.com",
+//				request,
+//				80,
+//				0
+//		) ;
+		//
+		// POST goes here.
+		//
+		httpPostForHomeAssistant(
+				triggerServer,
+				triggerRequest,
 				80,
-				0
-		) ;
+				0) ;
 
 #endif
 		ESP.deepSleepInstant( 0, WAKE_RF_DEFAULT) ;

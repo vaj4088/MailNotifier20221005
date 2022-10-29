@@ -35,6 +35,10 @@ void httpGet(
 		const char * server, const char * request="/", int port=80,
 		int waitMillis = 3000
 		) ;
+void httpPostForHomeAssistant(
+		const char * server, const char * request="/", int port=80,
+		int waitMillis = 3000
+		) ;
 void scanNetworkSynchronous() ;
 void simpleDecrypt(const char *text) ;
 void simpleEncrypt(const char *text) ;
