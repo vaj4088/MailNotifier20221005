@@ -12,9 +12,25 @@
 //
 
 //
+// The following includes are used for OTA reprogramming.
+//
+#include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
+#include <ESP8266HTTPUpdateServer.h>
+#include <ESP8266WiFi.h>
+//
+// End of "The following includes are used for OTA reprogramming".
+//
+
+//
 // The following include is needed for WiFi network connection.
 //
 #include "ESP8266WiFi.h"
+
+//
+// The following include is needed for secure HTTP (HTTPS).
+//
+#include <WiFiClientSecure.h>
 
 //#include <ESPAsyncTCP.h>
 //#include <ESPAsyncWebServer.h>
@@ -35,8 +51,8 @@ void httpGet(
 		const char * server, const char * request="/", int port=80,
 		int waitMillis = 3000
 		) ;
-void httpPostForHomeAssistant(
-		const char * server, const char * request="/", int port=80,
+void httpsPostForHomeAssistant(
+		const char * server, const char * request="/", int port=443,
 		int waitMillis = 3000
 		) ;
 void scanNetworkSynchronous() ;

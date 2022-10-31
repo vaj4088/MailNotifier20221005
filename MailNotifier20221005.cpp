@@ -3,16 +3,6 @@
 // The following include is standard practice.
 //
 #include "MailNotifier20221005.h"
-//
-// The following includes are used for OTA reprogramming.
-//
-#include <ESP8266WebServer.h>
-#include <ESP8266mDNS.h>
-#include <ESP8266HTTPUpdateServer.h>
-#include <ESP8266WiFi.h>
-//
-// End of "The following includes are used for OTA reprogramming".
-//
 
 //
 // Uncomment exactly one of these #define lines:
@@ -304,10 +294,10 @@ void setup()
 		//
 		// POST goes here.
 		//
-		httpPostForHomeAssistant(
+		httpsPostForHomeAssistant(
 				triggerServer,
 				triggerRequest,
-				80,
+				443,
 				0) ;
 
 #endif
@@ -643,21 +633,24 @@ void httpGet(
 // Default values for request, port and wait time are defined in the file
 // MailNotifier.h
 //
-void httpPostForHomeAssistant(
+void httpsPostForHomeAssistant(
 		const char * server, const char * request, int port,
 		int waitMillis) {
 	//
-	// Default port of 80 is used for web access but any port may be specified.
+	// Default port of 443 is used for web access but any port may be specified.
 	// Default wait time of 3 seconds (3000 milliseconds) is used but any
 	// wait time may be specified.  0 for the wait time means don't get
 	// response from the server.
 	//
-	WiFiClient client ;
+	WiFiClientSecure client ;
 
 	if (client.connect(server, port)) {
+
+		client.setInsecure() ;
+
 //		Serial.printf("Connected to server %s:%d .\n", server, port) ;
 
-		// Make a HTTP POST request for Home Assistant Webhooks:
+		// Make a HTTPS POST request for Home Assistant Webhooks:
 		client.print("POST ") ;
 		client.print(request) ;
 		client.println(" HTTP/2") ;
