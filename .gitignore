@@ -34,3 +34,4 @@
 *.out
 *.app
 >>>>>>> refs/remotes/origin/master
+/DebugDefinitions.txt

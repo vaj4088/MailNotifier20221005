@@ -54,6 +54,12 @@
 // #define Ian_debug3
  #define Ian_noDebug3
 
+//
+// Uncomment exactly one of these #define lines:
+//
+ #define Ian_debug4
+// #define Ian_noDebug4
+
 /*
  * Wanted to access
  *
@@ -106,11 +112,11 @@ ADC_MODE(ADC_VCC) ;  // Self VCC Read Mode
 boolean success ;
 int     status  ;
 
-// constants won't change:
 const char* ssid     = "*" ; // Replace * by the name (SSID) for your network.
 const char* password = "*" ; // Replace * by the password    for your network.
-const char* triggerServer  = "*" ;
-const char* triggerRequest = "*" ;
+const char* triggerServer  = "*" ; // Replace * by the hostname (SSID).
+const char* triggerRequest = "*" ; // Replace * by the request.
+int   triggerPort = 80 ; // Replace * by the port number on the host.
 
 const unsigned long CONNECTION_WAIT_MILLIS = 5 * 1000UL ;
 const int REQUEST_SIZE = 80 ;
@@ -294,11 +300,19 @@ void setup()
 		//
 		// POST goes here.
 		//
+#if defined Ian_debug4
+		httpsPostForHomeAssistant(
+				Ian_LocalDebugAddress,
+				triggerRequest,
+				Ian_LocalDebugSocket,
+				0) ;
+#elif defined Ian_noDebug4
 		httpsPostForHomeAssistant(
 				triggerServer,
 				triggerRequest,
-				443,
+				triggerPort,
 				0) ;
+#endif
 
 #endif
 		ESP.deepSleepInstant( 0, WAKE_RF_DEFAULT) ;
