@@ -42,6 +42,9 @@
 
 //add your function definitions for the project MailNotifier here
 
+void setupBody() ;
+void loopBody() ;
+
 void ConnectStationToNetwork(
 		const char* encryptedNetworkName,
 		const char* encryptedNetworkPassword

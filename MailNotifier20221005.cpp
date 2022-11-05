@@ -174,22 +174,14 @@ IPAddress dns2   ( 192, 168,   0, 100) ;
 
 #endif
 
-void setup()
-{
-	double batteryVoltage ;
-
-	for (byte i = 0 ; i<numberOfArrayElements(pinNumber) ; i++) {
-		pinMode     (pinNumber[i], INPUT_PULLUP) ;
+void setupBody() {
+	double batteryVoltage;
+	for (byte i = 0; i < numberOfArrayElements(pinNumber); i++) {
+		pinMode(pinNumber[i], INPUT_PULLUP);
 	}
-
 	// Serial
 	Serial.begin(115200);
-
-	Serial.flush() ;
-
-#if defined Ian_debug3
-	scanNetworkSynchronous() ;
-#endif
+	Serial.flush();
 
 	//
 	// Make unit a station, and connect to network.
@@ -199,10 +191,10 @@ void setup()
 	// Get the private encrypted strings.
 	//
 #include "SSIDprivate.private"
+
 	//
 	// End of "Get the private encrypted strings.".
 	//
-
 	ConnectStationToNetwork(ssid, password);
 	//
 	// End of "Make unit a station, and connect to network.".
@@ -216,120 +208,81 @@ void setup()
 	//
 	// End of "Erase the private encrypted strings."
 	//
-
-	if (digitalRead(otaProgrammingIndicator)==normalExecution) {
-		executionMode = normalExecution ;
+	if (digitalRead(otaProgrammingIndicator) == normalExecution) {
+		executionMode = normalExecution;
 	} else {
-		executionMode = otaReprogrammingExecution ;
+		executionMode = otaReprogrammingExecution;
 	}
-	if (executionMode==normalExecution) {
-
-	/*
-	 * Wanted to access
-	 *
-	 * https://maker.ifttt.com/trigger/{event}/with/key/<IFTTT_Service_key>
-	 *
-	 * to trigger ifttt.com to send a text to Ronni.
-	 *
-	 * {event} is Mail_Notifier
-	 *
-	 * so use
-	 *
- https://maker.ifttt.com/trigger/Mail_Notifier/with/key/<IFTTT_Service_key>
-	 *
-	 */
-
-		batteryVoltage = ESP.getVcc()*(0.00112016306998) ;
-		// NOTE:
-		// ESP.getVcc() and NOT ESP.getVCC().
-
-#if defined Ian_LocalDebugViaSocket
-		WiFiClient debug ;
-		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
-
-		debug.print("Connected to" ) ;
-		debug.print(Ian_LocalDebugAddress) ;
-		debug.print(" at port ") ;
-		debug.print(Ian_LocalDebugSocket) ;
-		debug.println(".") ;
-
-		debug.printf("\nBattery voltage is %f volts.\n", batteryVoltage) ;
-		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
-		if (executionMode==normalExecution) {
-			debug.printf("Execution mode is normal.\n") ;
+	if (executionMode == normalExecution) {
+		/*
+		 * Wanted to access
+		 *
+		 * https://maker.ifttt.com/trigger/{event}/with/key/<IFTTT_Service_key>
+		 *
+		 * to trigger ifttt.com to send a text to Ronni.
+		 *
+		 * {event} is Mail_Notifier
+		 *
+		 * so use
+		 *
+		 https://maker.ifttt.com/trigger/Mail_Notifier/with/key/<IFTTT_Service_key>
+		 *
+		 */
+		batteryVoltage = ESP.getVcc() * (0.00112016306998);
+		WiFiClient debug;
+		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket);
+		debug.print("Connected to");
+		debug.print(Ian_LocalDebugAddress);
+		debug.print(" at port ");
+		debug.print(Ian_LocalDebugSocket);
+		debug.println(".");
+		debug.printf("\nBattery voltage is %f volts.\n", batteryVoltage);
+		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__);
+		if (executionMode == normalExecution) {
+			debug.printf("Execution mode is normal.\n");
 		} else {
-			debug.printf("In reprogramming mode.\n") ;
+			debug.printf("In reprogramming mode.\n");
 		}
-		debug.printf("==================================================\n\n") ;
-		debug.flush() ;
-
-#elif defined Ian_NoLocalDebugViaSocket
+		debug.printf("==================================================\n\n");
+		debug.flush();
+		char request[REQUEST_SIZE];
+		snprintf(request,
+				REQUEST_SIZE, //				"\"%s%#.2f (%s %s)\"",
+				"%s%#.2f (%s %s)", triggerRequest, batteryVoltage, __DATE__,
+				__TIME__);
+		httpsPostForHomeAssistant(Ian_LocalDebugAddress, triggerRequest,
+				Ian_LocalDebugSocket, 0);
+#if defined Ian_debug3
+		scanNetworkSynchronous() ;
 #endif
-
-#if defined debug
-
-//		httpGet("45.17.221.124", "/", 21280) ; // TABLO at home.
-		httpGet("12.153.148.59", "/", 80) ;    // www.smartmetertexas.com login
-		Serial.printf("\nBattery voltage is %f volts.\n", batteryVoltage) ;
-		Serial.printf("Compiled on %s %s\n\n", __DATE__, __TIME__) ;
-		Serial.flush() ;
-
-#elif defined noDebug
-
-		char request[REQUEST_SIZE] ;
-		snprintf(
-				request,
-				REQUEST_SIZE,
-//				"\"%s%#.2f (%s %s)\"",
-				"%s%#.2f (%s %s)",
-				triggerRequest,
-				batteryVoltage,
-				__DATE__,
-				__TIME__
-				) ;
-//		Serial.printf(
-//				"GETting from maker.ifttt.com using \n%s\n\n",
-//				request,
-//				) ;
-//		httpGet(
-//				"maker.ifttt.com",
-//				request,
-//				80,
-//				0
-//		) ;
-		//
-		// POST goes here.
-		//
-#if defined Ian_debug4
-		httpsPostForHomeAssistant(
-				Ian_LocalDebugAddress,
-				triggerRequest,
-				Ian_LocalDebugSocket,
-				0) ;
-#elif defined Ian_noDebug4
-		httpsPostForHomeAssistant(
-				triggerServer,
-				triggerRequest,
-				triggerPort,
-				0) ;
-#endif
-
-#endif
-		ESP.deepSleepInstant( 0, WAKE_RF_DEFAULT) ;
-	} else {  // REPROGRAM OTA (Over The Air) using a web browser !
-//		Serial.printf("\n\nOTA Reprogramming via a web browser !\n\n\n") ;
+		ESP.deepSleepInstant(0, WAKE_RF_DEFAULT);
+	} else {
+		// REPROGRAM OTA (Over The Air) using a web browser !
+		//		Serial.printf("\n\nOTA Reprogramming via a web browser !\n\n\n") ;
 		//                   1         2         3         4
 		//          1234567890123456789012345678901234567890
-		MDNS.begin(otaHost) ;
-		httpUpdater.setup(&httpServer) ;
+		MDNS.begin(otaHost);
+		httpUpdater.setup(&httpServer);
 		httpServer.onNotFound([]() {
-			httpServer.send(200, "text/plain", "Go to /update.") ;
-	    });
-		httpServer.begin() ;
+			httpServer.send(200, "text/plain", "Go to /update.");
+		}
+		);
+		httpServer.begin();
+		MDNS.addService("http", "tcp", 80);
+		Serial.printf(updateMessage, WiFi.localIP().toString().c_str());
+	}
+}
 
-		MDNS.addService("http", "tcp", 80) ;
-
-		Serial.printf( updateMessage, WiFi.localIP().toString().c_str()) ;
+void loopBody() {
+	//
+	// Nothing to do for normal execution.
+	// (Deep Sleep should keep us from getting here.)
+	//
+	// However, need to do some work for OTA reprogramming.
+	//
+	if (executionMode == otaReprogrammingExecution) {
+		httpServer.handleClient();
+		MDNS.update();
 	}
 }
 
@@ -339,6 +292,11 @@ void setup()
 //	  WAKE_RF_DISABLED.
 //
 
+void setup()
+{
+	setupBody();
+}
+
 // The loop function is called in an endless loop
 void loop() {
 	//
@@ -347,10 +305,7 @@ void loop() {
 	//
 	// However, need to do some work for OTA reprogramming.
 	//
-	if (executionMode==otaReprogrammingExecution) {
-		httpServer.handleClient();
-		MDNS.update();
-	}
+	loopBody();
 }
 
 boolean delayingIsDone(unsigned long &since, unsigned long time) {
