@@ -259,7 +259,7 @@ void setupBody() {
 #if defined Ian_debug4
 		httpsPostForHomeAssistant(Ian_LocalDebugAddress, triggerRequest,
 				Ian_LocalDebugSocket, 0);
-#elif
+#else
 		httpsPostForHomeAssistant(triggerServer, triggerRequest,
 				triggerPort, 0) ;
 #endif
