@@ -60,6 +60,10 @@
  #define Ian_debug4
 // #define Ian_noDebug4
 
+#if defined Ian_debug4
+WiFiClient debug;
+#endif
+
 /*
  * Wanted to access
  *
@@ -229,7 +233,8 @@ void setupBody() {
 		 *
 		 */
 		batteryVoltage = ESP.getVcc() * (0.00112016306998);
-		WiFiClient debug;
+
+#if defined Ian_debug4
 		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket);
 		debug.print("Connected to");
 		debug.print(Ian_LocalDebugAddress);
@@ -245,13 +250,19 @@ void setupBody() {
 		}
 		debug.printf("==================================================\n\n");
 		debug.flush();
+#endif
 		char request[REQUEST_SIZE];
 		snprintf(request,
 				REQUEST_SIZE, //				"\"%s%#.2f (%s %s)\"",
 				"%s%#.2f (%s %s)", triggerRequest, batteryVoltage, __DATE__,
 				__TIME__);
+#if defined Ian_debug4
 		httpsPostForHomeAssistant(Ian_LocalDebugAddress, triggerRequest,
 				Ian_LocalDebugSocket, 0);
+#elif
+		httpsPostForHomeAssistant(triggerServer, triggerRequest,
+				triggerPort, 0) ;
+#endif
 #if defined Ian_debug3
 		scanNetworkSynchronous() ;
 #endif
@@ -649,6 +660,9 @@ void httpsPostForHomeAssistant(
 //		Serial.printf(
 //				"Closing the connection with server %s:%d .\n", server, port
 //				) ;
+#if defined Ian_debug4
+		debug.println("specialClose: EOF_FOR_LOGGER") ;
+#endif
 	} else {
 		Serial.printf("Could not connect to server %s:%d .\n", server, port) ;
 		stayHere() ;
