@@ -255,6 +255,7 @@ void setupBody() {
 			debug.printf("In reprogramming mode.\n") ;
 		}
 		debug.printf("==================================================\n\n") ;
+		debug.printf("EOF_FOR_LOGGER\n") ;
 		debug.flush() ;
 #endif
 
