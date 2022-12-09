@@ -134,7 +134,6 @@ const char* triggerRequest = "*" ; // Replace * by the request.
 int   triggerPort = 80 ; // Replace * by the port number on the host.
 
 const unsigned long CONNECTION_WAIT_MILLIS = 5 * 1000UL ;
-const int REQUEST_SIZE = 80 ;
 const byte pinNumber[] = {D0, D1, D2, D3, D4, D5, D6, D7} ;
 //
 // The internal pull up/down resistors have values of 30kΩ to 100kΩ,
@@ -190,14 +189,9 @@ IPAddress dns2   ( 192, 168,   0, 100) ;
 #endif
 
 void setupBody() {
-	double batteryVoltage;
 	for (byte i = 0; i < numberOfArrayElements(pinNumber); i++) {
 		pinMode(pinNumber[i], INPUT_PULLUP);
 	}
-	// Serial
-	Serial.begin(115200);
-	Serial.flush();
-
 	//
 	// Make unit a station, and connect to network.
 	//
@@ -243,40 +237,41 @@ void setupBody() {
 		 https://maker.ifttt.com/trigger/Mail_Notifier/with/key/<IFTTT_Service_key>
 		 *
 		 */
-		batteryVoltage = ESP.getVcc() * (0.00112016306998);
+		double batteryVoltage = ESP.getVcc() * (0.00112016306998);
 
 #if defined Ian_debug4
 		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket);
-		debug.print("Connected to ");
-		debug.print(Ian_LocalDebugAddress);
-		debug.print(" at port ");
-		debug.print(Ian_LocalDebugSocket);
-		debug.println(".");
-		debug.printf("\nBattery voltage is %f volts.\n", batteryVoltage);
-		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__);
+
+		debug.printf("Connected to %s at port %d.",
+				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
+		debug.printf("\nBattery voltage is %f volts.\n", batteryVoltage) ;
+		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
+		debug.printf("==================================================\n") ;
+		debug.printf("triggerRequest: %s\nbatteryVoltage: %#.2f\n",
+				triggerRequest, batteryVoltage) ;
 		if (executionMode == normalExecution) {
-			debug.printf("Execution mode is normal.\n");
+			debug.printf("Execution mode is normal.\n") ;
 		} else {
-			debug.printf("In reprogramming mode.\n");
+			debug.printf("In reprogramming mode.\n") ;
 		}
-		debug.printf("==================================================\n\n");
-		debug.flush();
+		debug.printf("==================================================\n\n") ;
+		debug.flush() ;
 #endif
-		char request[REQUEST_SIZE];
-		snprintf(request,
-				REQUEST_SIZE, //				"\"%s%#.2f (%s %s)\"",
-				"%s%#.2f (%s %s)", triggerRequest, batteryVoltage, __DATE__,
-				__TIME__);
+
 #if defined Ian_debug4
 		httpsPostForHomeAssistant(Ian_LocalDebugAddress, triggerRequest,
 				Ian_LocalDebugSocket, 0);
+		debug.printf("EOF_FOR_LOGGER\n") ;
+		debug.flush() ;
 #else
 		httpsPostForHomeAssistant(triggerServer, triggerRequest,
 				triggerPort, 0) ;
 #endif
+
 #if defined Ian_debug3
 		scanNetworkSynchronous() ;
 #endif
+
 		ESP.deepSleepInstant(0, WAKE_RF_DEFAULT);
 	} else {
 		// REPROGRAM OTA (Over The Air) using a web browser !
@@ -319,14 +314,8 @@ void setup()
 	setupBody();
 }
 
-// The loop function is called in an endless loop
-void loop() {
-	//
-	// Nothing to do for normal execution.
-	// (Deep Sleep should keep us from getting here.)
-	//
-	// However, need to do some work for OTA reprogramming.
-	//
+void loop()
+{
 	loopBody();
 }
 
@@ -635,12 +624,9 @@ void httpsPostForHomeAssistant(
 	//
 	WiFiClientSecure client ;
 
+	client.setInsecure() ;
+
 	if (client.connect(server, port)) {
-
-		client.setInsecure() ;
-
-//		Serial.printf("Connected to server %s:%d .\n", server, port) ;
-
 		// Make a HTTPS POST request for Home Assistant Webhooks:
 		client.print("POST ") ;
 		client.print(request) ;
@@ -669,13 +655,6 @@ void httpsPostForHomeAssistant(
 				Serial.write(c);
 			}
 		}
-//		Serial.printf(
-//				"Closing the connection with server %s:%d .\n", server, port
-//				) ;
-#if defined Ian_debug4
-		debug.println("EOF_FOR_LOGGER") ;
-		debug.flush() ;
-#endif
 	} else {
 		Serial.printf("Could not connect to server %s:%d .\n", server, port) ;
 		stayHere() ;
