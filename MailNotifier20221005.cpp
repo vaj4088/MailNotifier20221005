@@ -26,9 +26,20 @@
 
 //
 // Define the local name or IP address to be used for debugging.
-// Coyote2021Linux = 192.168.1.66
+// Coyote2021Linux = 192.168.1.68
 //
-#define Ian_LocalDebugAddress "Coyote2021Linux"
+
+//
+// Using a name worked early on but is inconsistent.
+//
+//#define Ian_LocalDebugAddress "Coyote2021Linux"
+//
+
+//
+// Using an IP address seems to work consistently.
+//
+#define Ian_LocalDebugAddress "192.168.1.68"
+//
 
 //
 // Uncomment exactly one of these #define lines:
@@ -236,7 +247,7 @@ void setupBody() {
 
 #if defined Ian_debug4
 		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket);
-		debug.print("Connected to");
+		debug.print("Connected to ");
 		debug.print(Ian_LocalDebugAddress);
 		debug.print(" at port ");
 		debug.print(Ian_LocalDebugSocket);
@@ -646,6 +657,7 @@ void httpsPostForHomeAssistant(
 
 		//		client.println("Connection: close");
 		client.println();
+		client.flush() ;
 
 		if (waitMillis>0) {
 			delay(waitMillis) ;
@@ -661,7 +673,8 @@ void httpsPostForHomeAssistant(
 //				"Closing the connection with server %s:%d .\n", server, port
 //				) ;
 #if defined Ian_debug4
-		debug.println("specialClose: EOF_FOR_LOGGER") ;
+		debug.println("EOF_FOR_LOGGER") ;
+		debug.flush() ;
 #endif
 	} else {
 		Serial.printf("Could not connect to server %s:%d .\n", server, port) ;
