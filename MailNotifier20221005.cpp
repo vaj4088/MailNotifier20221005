@@ -279,6 +279,24 @@ void setupBody() {
 		//		Serial.printf("\n\nOTA Reprogramming via a web browser !\n\n\n") ;
 		//                   1         2         3         4
 		//          1234567890123456789012345678901234567890
+
+#if defined Ian_debug4
+		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket);
+
+		debug.printf("==================================================\n") ;
+		debug.printf("Connected to %s at port %d.",
+				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
+		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
+		debug.printf("\n") ;
+		debug.printf("W A R N I N G : In reprogramming mode.\n") ;
+		debug.printf("W A R N I N G : In reprogramming mode.\n") ;
+		debug.printf("W A R N I N G : In reprogramming mode.\n") ;
+		debug.printf("\n") ;
+		debug.printf("==================================================\n\n") ;
+		debug.printf("EOF_FOR_LOGGER\n") ;
+		debug.flush() ;
+#endif
+
 		MDNS.begin(otaHost);
 		httpUpdater.setup(&httpServer);
 		httpServer.onNotFound([]() {
