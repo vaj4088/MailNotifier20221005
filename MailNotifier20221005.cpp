@@ -292,6 +292,7 @@ void setupBody() {
 		debug.printf("W A R N I N G : In reprogramming mode.\n") ;
 		debug.printf("W A R N I N G : In reprogramming mode.\n") ;
 		debug.printf("\n") ;
+		debug.printf(updateMessage, WiFi.localIP().toString().c_str());
 		debug.printf("==================================================\n\n") ;
 		debug.printf("EOF_FOR_LOGGER\n") ;
 		debug.flush() ;
