@@ -7,6 +7,19 @@
 #ifndef _MailNotifier_H_
 #define _MailNotifier_H_
 #include "Arduino.h"
+/*
+ * Needed for https POST access:
+ *
+ * #include <Arduino.h>             OK but with quotes instead of angle brackets
+ * #include <ESP8266WiFi.h>         OK but twice already
+ * #include <ESP8266HTTPClient.h>        Added below.
+ * #include <WiFiClientSecureBearSSL.h>  Added below.
+ *
+ */
+
+ #include <ESP8266HTTPClient.h>
+ #include <WiFiClientSecureBearSSL.h>
+
 //
 //add your includes for the project MailNotifier here
 //
@@ -28,9 +41,20 @@
 #include "ESP8266WiFi.h"
 
 //
+// Enabling this define allows the usage of ArduinoBearSSL without crypto chip.
+//
+//#define ARDUINO_DISABLE_ECCX08
+
+//
 // The following include is needed for secure HTTP (HTTPS).
 //
-#include <WiFiClientSecure.h>
+// #include <WiFiClientSecure.h>
+//#include <ArduinoBearSSL.h>
+
+//
+// Enabling this define allows the usage of ArduinoBearSSL without crypto chip.
+//
+#define ARDUINO_DISABLE_ECCX08
 
 //#include <ESPAsyncTCP.h>
 //#include <ESPAsyncWebServer.h>
