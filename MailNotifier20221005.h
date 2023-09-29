@@ -7,6 +7,19 @@
 #ifndef _MailNotifier_H_
 #define _MailNotifier_H_
 #include "Arduino.h"
+
+//
+// Uncomment exactly one of these #define lines:
+//
+#define Home
+// #define Aiden
+//
+
+//
+// Define the channel to be used.  0 < Ian_Channel < 12
+// Special Case: Ian_Channel = 0 means automatically search
+//               for the appropriate channel.
+
 /*
  * Needed for https POST access:
  *
@@ -39,27 +52,6 @@
 // The following include is needed for WiFi network connection.
 //
 #include "ESP8266WiFi.h"
-
-//
-// Enabling this define allows the usage of ArduinoBearSSL without crypto chip.
-//
-//#define ARDUINO_DISABLE_ECCX08
-
-//
-// The following include is needed for secure HTTP (HTTPS).
-//
-// #include <WiFiClientSecure.h>
-//#include <ArduinoBearSSL.h>
-
-//
-// Enabling this define allows the usage of ArduinoBearSSL without crypto chip.
-//
-#define ARDUINO_DISABLE_ECCX08
-
-//#include <ESPAsyncTCP.h>
-//#include <ESPAsyncWebServer.h>
-//#include <AsyncElegantOTA.h>
-
 
 //end of add your includes here.
 

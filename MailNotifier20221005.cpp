@@ -5,16 +5,6 @@
 #include "MailNotifier20221005.h"
 
 //
-// Uncomment exactly one of these #define lines:
-//
-#define Home
-// #define Aiden
-
-//
-// Define the channel to be used.  0 < Ian_Channel < 12
-// Special Case: Ian_Channel = 0 means automatically search
-//               for the appropriate channel.
-//
 // Ian_Channel < 0 OR Ian_Channel > 11 constitutes an error!
 //
 #define Ian_Channel 1
