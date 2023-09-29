@@ -25,6 +25,10 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ESP8266WiFi/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ESP8266mDNS/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ESP8266WebServer/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ArduinoBearSSL/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ArduinoECCX08/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ESP8266HTTPClient/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.346096083" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -36,6 +40,10 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ESP8266WiFi/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ESP8266mDNS/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ESP8266WebServer/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ArduinoBearSSL/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ArduinoECCX08/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ESP8266HTTPClient/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.819305807" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -47,6 +55,10 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ESP8266WiFi/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ESP8266mDNS/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ESP8266WebServer/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ArduinoBearSSL/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ArduinoECCX08/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MailNotifier20221005/libraries/ESP8266HTTPClient/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.855360137" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -102,4 +114,5 @@
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="refreshScope"/>
 </cproject>

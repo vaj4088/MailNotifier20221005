@@ -44,18 +44,6 @@
 //
 // Uncomment exactly one of these #define lines:
 //
- #define Ian_LocalDebugViaSocket
-// #define Ian_NoLocalDebugViaSocket
-
-//
-// Uncomment exactly one of these #define lines:
-//
-// #define debug
- #define noDebug
-
-//
-// Uncomment exactly one of these #define lines:
-//
 // #define Ian_debug2
  #define Ian_noDebug2
 
@@ -131,7 +119,7 @@ const char* ssid     = "*" ; // Replace * by the name (SSID) for your network.
 const char* password = "*" ; // Replace * by the password    for your network.
 const char* triggerServer  = "*" ; // Replace * by the hostname (SSID).
 const char* triggerRequest = "*" ; // Replace * by the request.
-int   triggerPort = 80 ; // Replace * by the port number on the host.
+int   triggerPort = 80 ; // Replace by the port number on the host.
 
 const unsigned long CONNECTION_WAIT_MILLIS = 5 * 1000UL ;
 const byte pinNumber[] = {D0, D1, D2, D3, D4, D5, D6, D7} ;
@@ -242,31 +230,33 @@ void setupBody() {
 #if defined Ian_debug4
 		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket);
 
-		debug.printf("Connected to %s at port %d.",
+		debug.printf("Mail Notifier connected to %s at port %d.",
 				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
 		debug.printf("\nBattery voltage is %f volts.\n", batteryVoltage) ;
 		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
 		debug.printf("==================================================\n") ;
 		debug.printf("triggerRequest: %s\nbatteryVoltage: %#.2f\n",
 				triggerRequest, batteryVoltage) ;
-		if (executionMode == normalExecution) {
-			debug.printf("Execution mode is normal.\n") ;
-		} else {
-			debug.printf("In reprogramming mode.\n") ;
-		}
+		debug.printf("Execution mode is normal.\n") ;
 		debug.printf("==================================================\n\n") ;
-		debug.printf("EOF_FOR_LOGGER\n") ;
-		debug.flush() ;
+//		debug.printf("EOF_FOR_LOGGER\n") ;
+//		debug.flush() ;
 #endif
 
 #if defined Ian_debug4
+/*
+		debug.printf("Going into httpsPostForHomeAssistant.\n") ;
 		httpsPostForHomeAssistant(Ian_LocalDebugAddress, triggerRequest,
 				Ian_LocalDebugSocket, 0);
+		debug.printf("Came out of httpsPostForHomeAssistant.\n") ;
+*/
 		debug.printf("EOF_FOR_LOGGER\n") ;
 		debug.flush() ;
 #else
-		httpsPostForHomeAssistant(triggerServer, triggerRequest,
+/*
+ 		httpsPostForHomeAssistant(triggerServer, triggerRequest,
 				triggerPort, 0) ;
+*/
 #endif
 
 #if defined Ian_debug3
@@ -284,7 +274,7 @@ void setupBody() {
 		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket);
 
 		debug.printf("==================================================\n") ;
-		debug.printf("Connected to %s at port %d.",
+		debug.printf("Mail Notifier connected to %s at port %d.",
 				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
 		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
 		debug.printf("\n") ;
@@ -472,9 +462,7 @@ void ConnectStationToNetwork(
 	//
 
 	// attempt to connect to Wifi network:
-//	if (WiFi.status() == WL_CONNECTED) {
-//		Serial.printf("DEBUG >>>>>>>>  Already connected!\n") ;
-//	}
+
 	while (WiFi.status() != WL_CONNECTED) {
 		unsigned long connectionStart = millis() ;
 
@@ -576,107 +564,5 @@ void ConnectStationToNetwork(
 	}
 	if (status != WL_CONNECTED) {
 		stayHere();
-	}
-}
-
-//
-// Default values for request, port and wait time are defined in the file
-// MailNotifier.h
-//
-void httpGet(
-		const char * server, const char * request, int port,
-		int waitMillis) {
-	//
-	// Default port of 80 is used for web access but any port may be specified.
-	// Default wait time of 3 seconds (3000 milliseconds) is used but any
-	// wait time may be specified.  0 for the wait time means don't get
-	// response from the server.
-	//
-	WiFiClient client ;
-
-	if (client.connect(server, port)) {
-//		Serial.printf("Connected to server %s:%d .\n", server, port) ;
-
-		// Make a HTTP request:
-		client.print("GET ") ;
-		client.print(request) ;
-		client.println(" HTTP/1.1") ;
-
-		client.print("Host: ") ;
-		client.print(server) ;
-		client.print(":") ;
-		client.println(port) ;
-
-//		client.println("Connection: close");
-		client.println();
-
-		if (waitMillis>0) {
-			delay(waitMillis) ;
-
-			// If there are incoming bytes available
-			// from the server, read them and print them:
-			while (client.available()) {
-				char c = client.read();
-				Serial.write(c);
-			}
-		}
-//		Serial.printf(
-//				"Closing the connection with server %s:%d .\n", server, port
-//				) ;
-	} else {
-		Serial.printf("Could not connect to server %s:%d .\n", server, port) ;
-		stayHere() ;
-	}
-}
-
-//
-// Default values for request, port and wait time are defined in the file
-// MailNotifier.h
-//
-void httpsPostForHomeAssistant(
-		const char * server, const char * request, int port,
-		int waitMillis) {
-	//
-	// Default port of 443 is used for web access but any port may be specified.
-	// Default wait time of 3 seconds (3000 milliseconds) is used but any
-	// wait time may be specified.  0 for the wait time means don't get
-	// response from the server.
-	//
-	WiFiClientSecure client ;
-
-	client.setInsecure() ;
-
-	if (client.connect(server, port)) {
-		// Make a HTTPS POST request for Home Assistant Webhooks:
-		client.print("POST ") ;
-		client.print(request) ;
-		client.println(" HTTP/2") ;
-
-		client.print("Host: ") ;
-		client.print(server) ;
-		client.print(":") ;
-		client.println(port) ;
-
-		client.println("user-agent: MailboxNotifier/1.0.0") ;
-
-		client.println("accept: */*") ;
-
-		//		client.println("Connection: close");
-		client.println();
-		client.flush() ;
-
-		if (waitMillis>0) {
-			delay(waitMillis) ;
-
-			// If there are incoming bytes available
-			// from the server, read them and print them:
-			while (client.available()) {
-				char c = client.read();
-				Serial.write(c);
-			}
-		}
-	} else {
-		Serial.printf("Could not connect to server %s:%d .\n", server, port) ;
-		stayHere() ;
 	}
 }

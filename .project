@@ -42,6 +42,21 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/3.0.2/variants/d1_mini</locationURI>
 		</link>
 		<link>
+			<name>libraries/ArduinoBearSSL</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/ArduinoBearSSL/1.7.3</locationURI>
+		</link>
+		<link>
+			<name>libraries/ArduinoECCX08</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/ArduinoECCX08/1.3.7</locationURI>
+		</link>
+		<link>
+			<name>libraries/ESP8266HTTPClient</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/3.0.2/libraries/ESP8266HTTPClient</locationURI>
+		</link>
+		<link>
 			<name>libraries/ESP8266HTTPUpdateServer</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/3.0.2/libraries/ESP8266HTTPUpdateServer</locationURI>
@@ -60,6 +75,11 @@
 			<name>libraries/ESP8266mDNS</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/3.0.2/libraries/ESP8266mDNS</locationURI>
+		</link>
+		<link>
+			<name>libraries/Wire</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/3.0.2/libraries/Wire</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
