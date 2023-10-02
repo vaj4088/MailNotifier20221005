@@ -107,9 +107,7 @@ int     status  ;
 
 const char* ssid     = "*" ; // Replace * by the name (SSID) for your network.
 const char* password = "*" ; // Replace * by the password    for your network.
-const char* triggerServer  = "*" ; // Replace * by the hostname (SSID).
 const char* triggerRequest = "*" ; // Replace * by the request.
-int   triggerPort = 80 ; // Replace by the port number on the host.
 
 const unsigned long CONNECTION_WAIT_MILLIS = 5 * 1000UL ;
 const byte pinNumber[] = {D0, D1, D2, D3, D4, D5, D6, D7} ;
@@ -232,22 +230,49 @@ void setupBody() {
 //		debug.printf("EOF_FOR_LOGGER\n") ;
 //		debug.flush() ;
 #endif
-
+		//
+		//
+		//
+		// Define a secure client.
+		//
+		std::unique_ptr<BearSSL::WiFiClientSecure> client(new BearSSL::WiFiClientSecure);
+		// Ignore SSL certificate validation
+		client->setInsecure();
+		// Create an HTTPClient instance for our POST request.
+		HTTPClient https;
+		//Initializing HTTPS communication using the secure client
 #if defined Ian_debug4
-/*
-		debug.printf("Going into httpsPostForHomeAssistant.\n") ;
-		httpsPostForHomeAssistant(Ian_LocalDebugAddress, triggerRequest,
-				Ian_LocalDebugSocket, 0);
-		debug.printf("Came out of httpsPostForHomeAssistant.\n") ;
-*/
-		debug.printf("EOF_FOR_LOGGER\n") ;
-		debug.flush() ;
+		debug.print("[HTTPS] begin...\n");
+		if (https.begin(*client, triggerRequest)) {  // HTTPS
+			debug.print("NOW going to ");
+			debug.println(triggerRequest);
+			debug.print("[HTTPS] POST...\n");
+			// start connection and send HTTP header
+			int httpCode = https.POST("");
+			//
+			//
+			// HTTP header has been sent and
+			// Server response header has been handled internally.
+			//
+			debug.printf("[HTTPS] POST... code: %d\n", httpCode);
+			// file found at server
+			if (
+					httpCode == HTTP_CODE_OK ||
+					httpCode == HTTP_CODE_MOVED_PERMANENTLY)
+			{
+				debug.println(https.getString());
+			} else {
+				debug.printf("[HTTPS] POST... failed, error: %s\n",
+						https.errorToString(httpCode).c_str());
+				debug.println(https.getString());
+			}
+			debug.printf("EOF_FOR_LOGGER\n") ;
+			debug.flush() ;
 #else
-/*
- 		httpsPostForHomeAssistant(triggerServer, triggerRequest,
-				triggerPort, 0) ;
-*/
+			https.begin(*client, triggerRequest) ;  // HTTPS
+			https.POST("");
 #endif
+		}
 
 #if defined Ian_debug3
 		scanNetworkSynchronous() ;

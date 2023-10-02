@@ -36,3 +36,9 @@
 >>>>>>> refs/remotes/origin/master
 /DebugDefinitions.txt
 /Release/
+/Mail Notification.txt
+/HttpClient_Calls.txt
+/HttpClient.cpp
+/HttpClient.h
+/b64.cpp
+/b64.h
