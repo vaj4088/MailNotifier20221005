@@ -28,9 +28,24 @@
 //
 // Using an IP address seems to work consistently.
 //
+//
+#if defined Home
+// At home
 #define Ian_LocalDebugAddress "192.168.1.68"
 //
-
+//
+#elif defined Aiden
+// At Aiden's
+#define Ian_LocalDebugAddress "10.0.0.246"
+//
+//
+#else
+// At Evan's
+#define Ian_LocalDebugAddress "192.168.1.246"
+//
+//
+#endif
+//
 //
 // Uncomment exactly one of these #define lines:
 //
@@ -114,7 +129,7 @@ const byte pinNumber[] = {D0, D1, D2, D3, D4, D5, D6, D7} ;
 //
 // The internal pull up/down resistors have values of 30kΩ to 100kΩ,
 // according to https://bbs.espressif.com/viewtopic.php?t=1079 .//
-//
+//.begin
 // Avoid GIO0, GPIO2, and GPIO15 because these control boot mode.
 // These correspond on an ESP8266 D1 Mini Pro to
 // D3, D4, and D8.
