@@ -190,8 +190,22 @@ void setupBody() {
 	//
 	// Get the private encrypted strings.
 	//
-#include "SSIDprivate.private"
-
+    // #include "SSIDprivate.private"
+	//
+	// __has_include is defined for gcc but probably not for other compilers.
+	// This is the way gcc documentation says to use it safely.
+	//
+#if defined __has_include
+#  if __has_include ("SSIDprivate.private")
+#    include "SSIDprivate.private"
+#  elif __has_include ("SSIDprivate.h")
+#    include "SSIDprivate.h"
+#  else
+#    error "Missing SSIDprivate.h and SSIDprivate.private include file."
+#  endif
+#else
+#  include "SSIDprivate.private"
+#endif
 	//
 	// End of "Get the private encrypted strings.".
 	//
