@@ -64,6 +64,13 @@
  #define Ian_debug4
 // #define Ian_noDebug4
 
+//
+// Uncomment exactly one of these THREE #define lines:
+//
+// #define Ian_debug5_otaReprogramming
+#define Ian_debug5_notification
+// #define Ian_noDebug5
+
 #if defined Ian_debug4
 WiFiClient debug;
 #endif
@@ -223,10 +230,23 @@ void setupBody() {
 	// End of "Erase the private encrypted strings."
 	//
 	if (digitalRead(otaProgrammingIndicator) == normalExecution) {
-		executionMode = normalExecution;
+		executionMode = otaReprogrammingExecution;
 	} else {
 		executionMode = otaReprogrammingExecution;
 	}
+
+#if defined Ian_debug5_otaReprogramming
+	executionMode = otaReprogrammingExecution;
+#endif
+
+#if defined Ian_debug5_notification
+	executionMode = otaReprogrammingExecution;
+#endif
+
+#if defined Ian_noDebug5
+	// Do nothing.
+#endif
+
 	if (executionMode == normalExecution) {
 		/*
 		 * Wanted to access
