@@ -183,7 +183,8 @@ IPAddress localIp(   0,   0,   0,   0) ; // localIp, gateway and subnet are
 IPAddress gateway(   0,   0,   0,   0) ; // 0.0.0.0 to indicate to
 IPAddress subnet (   0,   0,   0,   0) ; // use DHCP.
 IPAddress dns1   (   0,   0,   0,   0) ; // dns1 and dns2 will be set by DHCP.
-IPAddress dns2   (   0,   0,   0,   0) ; // dns1 and dns2 will be set by DHCP.
+IPAddress dns2   (   0,   0,   0,   0) ; // Ian_debug4 will cause assigned
+                                         // addresses to be prnted.
 
 /*
 #elif defined Aiden
@@ -365,6 +366,13 @@ void setupBody() {
 		debug.printf("W A R N I N G : In reprogramming mode.\n") ;
 		debug.printf("\n") ;
 		debug.printf(updateMessage, WiFi.localIP().toString().c_str());
+		debug.printf("Gateway is %s .\n", WiFi.gatewayIP().toString().c_str()) ;
+		debug.printf("DNS 0 is %s .\n", WiFi.dnsIP(0).toString().c_str()) ;
+		debug.printf("DNS 1 is %s .\n", WiFi.dnsIP(1).toString().c_str()) ;
+		debug.printf("DNS 2 is %s .\n", WiFi.dnsIP(2).toString().c_str()) ;
+		debug.printf("Channel is %hd .\n", WiFi.channel() ) ;
+		debug.printf("Subnet Mask is %s .\n",
+				WiFi.subnetMask().toString().c_str()) ;
 		debug.printf("==================================================\n\n") ;
 		debug.printf("EOF_FOR_LOGGER\n") ;
 		debug.flush() ;
