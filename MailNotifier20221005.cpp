@@ -214,7 +214,7 @@ void setupBody() {
 	//
 
 	//
-	// Get the private encrypted strings.
+	// First, get the private encrypted strings.
 	//
     // #include "SSIDprivate.private"
 	//
@@ -248,22 +248,19 @@ void setupBody() {
 	//
 	// End of "Erase the private encrypted strings."
 	//
+
+#if defined Ian_debug5_otaReprogramming
+	executionMode = otaReprogrammingExecution ;
+
+#elif defined Ian_debug5_notification
+	executionMode = normalExecution ;
+
+#else
 	if (digitalRead(otaProgrammingIndicator) == normalExecution) {
-		executionMode = otaReprogrammingExecution;
+		executionMode = normalExecution;
 	} else {
 		executionMode = otaReprogrammingExecution;
 	}
-
-#if defined Ian_debug5_otaReprogramming
-	executionMode = otaReprogrammingExecution;
-#endif
-
-#if defined Ian_debug5_notification
-	executionMode = otaReprogrammingExecution;
-#endif
-
-#if defined Ian_noDebug5
-	// Do nothing.
 #endif
 
 	if (executionMode == normalExecution) {
@@ -303,7 +300,8 @@ void setupBody() {
 		//
 		// Define a secure client.
 		//
-		std::unique_ptr<BearSSL::WiFiClientSecure> client(new BearSSL::WiFiClientSecure);
+		std::unique_ptr<BearSSL::WiFiClientSecure>
+		  client(new BearSSL::WiFiClientSecure) ;
 		// Ignore SSL certificate validation
 		client->setInsecure();
 		// Create an HTTPClient instance for our POST request.
