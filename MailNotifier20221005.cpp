@@ -164,6 +164,7 @@ const char * updateMessage =
 
 //
 // Defined in SSIDprivate.h
+// or in SSIDprivate.private
 //
 // const char* makerRequest = "..." ;
 //
@@ -178,11 +179,28 @@ IPAddress dns2   (  68,  94, 157,   9) ;
 
 #elif defined Aiden
 
+IPAddress localIp(   0,   0,   0,   0) ; // localIp, gateway and subnet are
+IPAddress gateway(   0,   0,   0,   0) ; // 0.0.0.0 to indicate to
+IPAddress subnet (   0,   0,   0,   0) ; // use DHCP.
+IPAddress dns1   (   0,   0,   0,   0) ; // dns1 and dns2 will be set by DHCP.
+IPAddress dns2   (   0,   0,   0,   0) ; // dns1 and dns2 will be set by DHCP.
+
+/*
+#elif defined Aiden
+
 IPAddress localIp( 192, 168,   0, 160) ;
 IPAddress gateway( 192, 168,   0,   1) ;
 IPAddress subnet ( 255, 255, 255,   0) ;
 IPAddress dns1   ( 192, 168,   0, 100) ;
 IPAddress dns2   ( 192, 168,   0, 100) ;
+*/
+#else
+// At Evan's
+IPAddress localIp(   0,   0,   0,   0) ; // localIp, gateway and subnet are
+IPAddress gateway(   0,   0,   0,   0) ; // 0.0.0.0 to indicate to
+IPAddress subnet (   0,   0,   0,   0) ; // use DHCP.
+IPAddress dns1   (   0,   0,   0,   0) ; // dns1 and dns2 will be set by DHCP.
+IPAddress dns2   (   0,   0,   0,   0) ; // dns1 and dns2 will be set by DHCP.
 
 #endif
 
