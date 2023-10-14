@@ -127,6 +127,8 @@ ADC_MODE(ADC_VCC) ;  // Self VCC Read Mode
 boolean success ;
 int     status  ;
 
+const unsigned long bVCalib = 0.00112016306998 ;
+
 const char* ssid     = "*" ; // Replace * by the name (SSID) for your network.
 const char* password = "*" ; // Replace * by the password    for your network.
 const char* triggerRequest = "*" ; // Replace * by the request.
@@ -278,7 +280,7 @@ void setupBody() {
 		 https://maker.ifttt.com/trigger/Mail_Notifier/with/key/<IFTTT_Service_key>
 		 *
 		 */
-		double batteryVoltage = ESP.getVcc() * (0.00112016306998);
+		double batteryVoltage = ESP.getVcc() * bVCalib ;
 
 #if defined Ian_debug4
 		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket);
@@ -368,7 +370,7 @@ void setupBody() {
 		debug.printf("==================================================\n") ;
 		debug.printf("Mail Notifier connected to %s at port %d.",
 				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
-		double batteryVoltage = ESP.getVcc() * (0.00112016306998);
+		double batteryVoltage = ESP.getVcc() * bVCalib ;
 		debug.printf("\nBattery voltage is %f volts.\n", batteryVoltage) ;
 		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
 		debug.printf("\n") ;
