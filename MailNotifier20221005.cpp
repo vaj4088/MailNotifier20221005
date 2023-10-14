@@ -283,14 +283,21 @@ void setupBody() {
 #if defined Ian_debug4
 		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket);
 
+		debug.printf("==================================================\n") ;
 		debug.printf("Mail Notifier connected to %s at port %d.",
 				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
 		debug.printf("\nBattery voltage is %f volts.\n", batteryVoltage) ;
 		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
-		debug.printf("==================================================\n") ;
 		debug.printf("triggerRequest: %s\nbatteryVoltage: %#.2f\n",
 				triggerRequest, batteryVoltage) ;
 		debug.printf("Execution mode is normal.\n") ;
+		debug.printf("Gateway is %s .\n", WiFi.gatewayIP().toString().c_str()) ;
+		debug.printf("DNS 0 is %s .\n", WiFi.dnsIP(0).toString().c_str()) ;
+		debug.printf("DNS 1 is %s .\n", WiFi.dnsIP(1).toString().c_str()) ;
+		debug.printf("DNS 2 is %s .\n", WiFi.dnsIP(2).toString().c_str()) ;
+		debug.printf("Channel is %hd .\n", WiFi.channel() ) ;
+		debug.printf("Subnet Mask is %s .\n",
+				WiFi.subnetMask().toString().c_str()) ;
 		debug.printf("==================================================\n\n") ;
 //		debug.printf("EOF_FOR_LOGGER\n") ;
 //		debug.flush() ;
@@ -345,6 +352,10 @@ void setupBody() {
 #endif
 
 		ESP.deepSleepInstant(0, WAKE_RF_DEFAULT);
+		//
+		// Above is normal execution mode (notification), and
+		// below is Over The Air (OTA) reprogramming.
+		//
 	} else {
 		// REPROGRAM OTA (Over The Air) using a web browser !
 		//		Serial.printf("\n\nOTA Reprogramming via a web browser !\n\n\n") ;
@@ -357,6 +368,7 @@ void setupBody() {
 		debug.printf("==================================================\n") ;
 		debug.printf("Mail Notifier connected to %s at port %d.",
 				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
+		debug.printf("\nBattery voltage is %f volts.\n", batteryVoltage) ;
 		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
 		debug.printf("\n") ;
 		debug.printf("W A R N I N G : In reprogramming mode.\n") ;
