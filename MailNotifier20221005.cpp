@@ -368,6 +368,7 @@ void setupBody() {
 		debug.printf("==================================================\n") ;
 		debug.printf("Mail Notifier connected to %s at port %d.",
 				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
+		double batteryVoltage = ESP.getVcc() * (0.00112016306998);
 		debug.printf("\nBattery voltage is %f volts.\n", batteryVoltage) ;
 		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
 		debug.printf("\n") ;
