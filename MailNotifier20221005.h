@@ -8,6 +8,8 @@
 #define _MailNotifier_H_
 #include "Arduino.h"
 
+#define requestBufferSize 256
+
 //
 // Uncomment exactly one of these #define lines:
 //

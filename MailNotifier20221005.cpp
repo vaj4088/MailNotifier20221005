@@ -126,6 +126,7 @@ ADC_MODE(ADC_VCC) ;  // Self VCC Read Mode
 
 boolean success ;
 int     status  ;
+char requestBuffer[requestBufferSize] ;
 
 const unsigned long bVCalib = 0.00112016306998 ;
 
@@ -315,12 +316,21 @@ void setupBody() {
 		client->setInsecure();
 		// Create an HTTPClient instance for our POST request.
 		HTTPClient https;
+
+		// Set up the message to be sent.
+		//
+		snprintf(
+				requestBuffer,
+				requestBufferSize,
+				triggerRequest,
+				batteryVoltage
+				) ;
 		//Initializing HTTPS communication using the secure client
 #if defined Ian_debug4
 		debug.print("[HTTPS] begin...\n");
-		if (https.begin(*client, triggerRequest)) {  // HTTPS
+		if (https.begin(*client, requestBuffer)) {  // HTTPS
 			debug.print("NOW going to ");
-			debug.println(triggerRequest);
+			debug.println(requestBuffer);
 			debug.print("[HTTPS] POST...\n");
 			// start connection and send HTTP header
 			int httpCode = https.POST("");
@@ -344,7 +354,7 @@ void setupBody() {
 			debug.printf("EOF_FOR_LOGGER\n") ;
 			debug.flush() ;
 #else
-			https.begin(*client, triggerRequest) ;  // HTTPS
+			https.begin(*client, requestBuffer) ;  // HTTPS
 			https.POST("");
 #endif
 		}
