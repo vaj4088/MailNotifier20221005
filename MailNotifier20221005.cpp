@@ -71,6 +71,12 @@
 #define Ian_debug5_notification
 // #define Ian_noDebug5
 
+//
+// Uncomment exactly one of these #define lines:
+//
+ #define Ian_debug6
+// #define Ian_noDebug6
+
 #if defined Ian_debug4
 WiFiClient debug;
 #endif
@@ -331,6 +337,7 @@ void setupBody() {
 		if (https.begin(*client, requestBuffer)) {  // HTTPS
 			debug.print("NOW going to ");
 			debug.println(requestBuffer);
+#  if !defined Ian_debug6
 			debug.print("[HTTPS] POST...\n");
 			// start connection and send HTTP header
 			int httpCode = https.POST("");
@@ -351,11 +358,14 @@ void setupBody() {
 						https.errorToString(httpCode).c_str());
 				debug.println(https.getString());
 			}
+#  endif
 			debug.printf("EOF_FOR_LOGGER\n") ;
 			debug.flush() ;
 #else
 			https.begin(*client, requestBuffer) ;  // HTTPS
+#  if !defined Ian_debug6
 			https.POST("");
+#  endif
 #endif
 		}
 
