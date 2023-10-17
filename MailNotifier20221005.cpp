@@ -292,7 +292,7 @@ void setupBody() {
 #if defined Ian_debug4
 		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket);
 
-		debug.printf("==================================================\n") ;
+		debug.printf("Start=============================================\n") ;
 		debug.printf("Mail Notifier connected to %s at port %d.\n",
 				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
 		debug.printf("Vcc is %u .\n", ESP.getVcc()) ;
@@ -311,7 +311,7 @@ void setupBody() {
 		debug.printf("Channel is %hd .\n", WiFi.channel() ) ;
 		debug.printf("Subnet Mask is %s .\n",
 				WiFi.subnetMask().toString().c_str()) ;
-		debug.printf("==================================================\n\n") ;
+		debug.printf("End===============================================\n\n") ;
 //		debug.printf("EOF_FOR_LOGGER\n") ;
 //		debug.flush() ;
 #endif
@@ -391,7 +391,7 @@ void setupBody() {
 #if defined Ian_debug4
 		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket);
 
-		debug.printf("==================================================\n") ;
+		debug.printf("Start=============================================\n") ;
 		debug.printf("Mail Notifier connected to %s at port %d.\n",
 				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
 		double batteryVoltage = ESP.getVcc() * bVCalib ;
@@ -414,7 +414,7 @@ void setupBody() {
 		debug.printf("Channel is %hd .\n", WiFi.channel() ) ;
 		debug.printf("Subnet Mask is %s .\n",
 				WiFi.subnetMask().toString().c_str()) ;
-		debug.printf("==================================================\n\n") ;
+		debug.printf("End===============================================\n\n") ;
 		debug.printf("EOF_FOR_LOGGER\n") ;
 		debug.flush() ;
 #endif
