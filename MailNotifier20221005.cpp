@@ -293,11 +293,11 @@ void setupBody() {
 		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket);
 
 		debug.printf("==================================================\n") ;
-		debug.printf("Mail Notifier connected to %s at port %d.",
+		debug.printf("Mail Notifier connected to %s at port %d.\n",
 				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
 		debug.printf("Vcc is %u .\n", ESP.getVcc()) ;
 		debug.printf("bVCalib is %lu .\n", ESP.getVcc()) ;
-		debug.printf("\nBattery voltage is %f volts.\n", batteryVoltage) ;
+		debug.printf("Battery voltage is %f volts.\n", batteryVoltage) ;
 		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
 		debug.printf("triggerRequest: %s\nbatteryVoltage: %#.2f\n",
 				triggerRequest, batteryVoltage) ;
@@ -392,10 +392,12 @@ void setupBody() {
 		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket);
 
 		debug.printf("==================================================\n") ;
-		debug.printf("Mail Notifier connected to %s at port %d.",
+		debug.printf("Mail Notifier connected to %s at port %d.\n",
 				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
 		double batteryVoltage = ESP.getVcc() * bVCalib ;
-		debug.printf("\nBattery voltage is %f volts.\n", batteryVoltage) ;
+		debug.printf("Vcc is %u .\n", ESP.getVcc()) ;
+		debug.printf("bVCalib is %lu .\n", bVCalib) ;
+		debug.printf("Battery voltage is %f volts.\n", batteryVoltage) ;
 		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
 		debug.printf("\n") ;
 		debug.printf("W A R N I N G : In reprogramming mode.\n") ;
