@@ -295,11 +295,15 @@ void setupBody() {
 		debug.printf("==================================================\n") ;
 		debug.printf("Mail Notifier connected to %s at port %d.",
 				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
+		debug.printf("Vcc is %u .\n", ESP.getVcc()) ;
+		debug.printf("bVCalib is %lu .\n", ESP.getVcc()) ;
 		debug.printf("\nBattery voltage is %f volts.\n", batteryVoltage) ;
 		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
 		debug.printf("triggerRequest: %s\nbatteryVoltage: %#.2f\n",
 				triggerRequest, batteryVoltage) ;
 		debug.printf("Execution mode is normal.\n") ;
+		debug.printf("Assigned address is %s .\n",
+				WiFi.localIP().toString().c_str() ) ;
 		debug.printf("Gateway is %s .\n", WiFi.gatewayIP().toString().c_str()) ;
 		debug.printf("DNS 0 is %s .\n", WiFi.dnsIP(0).toString().c_str()) ;
 		debug.printf("DNS 1 is %s .\n", WiFi.dnsIP(1).toString().c_str()) ;
@@ -399,6 +403,8 @@ void setupBody() {
 		debug.printf("W A R N I N G : In reprogramming mode.\n") ;
 		debug.printf("\n") ;
 		debug.printf(updateMessage, WiFi.localIP().toString().c_str());
+		debug.printf("Assigned address is %s .\n",
+				WiFi.localIP().toString().c_str() ) ;
 		debug.printf("Gateway is %s .\n", WiFi.gatewayIP().toString().c_str()) ;
 		debug.printf("DNS 0 is %s .\n", WiFi.dnsIP(0).toString().c_str()) ;
 		debug.printf("DNS 1 is %s .\n", WiFi.dnsIP(1).toString().c_str()) ;
