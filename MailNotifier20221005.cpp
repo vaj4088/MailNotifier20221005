@@ -134,7 +134,7 @@ boolean success ;
 int     status  ;
 char requestBuffer[requestBufferSize] ;
 
-const unsigned long bVCalib = 0.00112016306998 ;
+const double bVCalib = 0.00112016306998 ;
 
 const char* ssid     = "*" ; // Replace * by the name (SSID) for your network.
 const char* password = "*" ; // Replace * by the password    for your network.
@@ -296,7 +296,7 @@ void setupBody() {
 		debug.printf("Mail Notifier connected to %s at port %d.\n",
 				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
 		debug.printf("Vcc is %u .\n", ESP.getVcc()) ;
-		debug.printf("bVCalib is %lu .\n", ESP.getVcc()) ;
+		debug.printf("bVCalib is %.14f .\n", bVCalib) ;
 		debug.printf("Battery voltage is %f volts.\n", batteryVoltage) ;
 		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
 		debug.printf("triggerRequest: %s\nbatteryVoltage: %#.2f\n",
@@ -396,7 +396,7 @@ void setupBody() {
 				Ian_LocalDebugAddress, Ian_LocalDebugSocket) ;
 		double batteryVoltage = ESP.getVcc() * bVCalib ;
 		debug.printf("Vcc is %u .\n", ESP.getVcc()) ;
-		debug.printf("bVCalib is %lu .\n", bVCalib) ;
+		debug.printf("bVCalib is %.14f .\n", bVCalib) ;
 		debug.printf("Battery voltage is %f volts.\n", batteryVoltage) ;
 		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
 		debug.printf("\n") ;
