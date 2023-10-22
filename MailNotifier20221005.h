@@ -69,14 +69,14 @@ void ConnectStationToNetwork(
 		const char* encryptedNetworkPassword
 		) ;
 boolean delayingIsDone(unsigned long &since, unsigned long time) ;
-void httpGet(
-		const char * server, const char * request="/", int port=80,
-		int waitMillis = 3000
-		) ;
-void httpsPostForHomeAssistant(
-		const char * server, const char * request="/", int port=443,
-		int waitMillis = 3000
-		) ;
+//void httpGet(
+//		const char * server, const char * request="/", int port=80,
+//		int waitMillis = 3000
+//		) ;
+//void httpsPostForHomeAssistant(
+//		const char * server, const char * request="/", int port=443,
+//		int waitMillis = 3000
+//		) ;
 void scanNetworkSynchronous() ;
 void simpleDecrypt(const char *text) ;
 void simpleEncrypt(const char *text) ;
