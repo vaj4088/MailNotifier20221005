@@ -31,7 +31,7 @@
 //
 #if defined Home
 // At home
-#define Ian_LocalDebugAddress "192.168.1.68"
+#define Ian_LocalDebugAddress "192.168.1.94"
 //
 //
 #elif defined Aiden
