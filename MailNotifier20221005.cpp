@@ -61,21 +61,21 @@
 //
 // Uncomment exactly one of these #define lines:
 //
- #define Ian_debug4
-// #define Ian_noDebug4
+// #define Ian_debug4
+ #define Ian_noDebug4
 
 //
 // Uncomment exactly one of these THREE #define lines:
 //
 // #define Ian_debug5_otaReprogramming
-#define Ian_debug5_notification
-// #define Ian_noDebug5
+// #define Ian_debug5_notification
+ #define Ian_noDebug5
 
 //
 // Uncomment exactly one of these #define lines:
 //
- #define Ian_debug6
-// #define Ian_noDebug6
+// #define Ian_debug6
+ #define Ian_noDebug6
 
 #if defined Ian_debug4
 WiFiClient debug;
@@ -144,8 +144,8 @@ const unsigned long CONNECTION_WAIT_MILLIS = 5 * 1000UL ;
 const byte pinNumber[] = {D0, D1, D2, D3, D4, D5, D6, D7} ;
 //
 // The internal pull up/down resistors have values of 30kΩ to 100kΩ,
-// according to https://bbs.espressif.com/viewtopic.php?t=1079 .//
-//.begin
+// according to https://bbs.espressif.com/viewtopic.php?t=1079 .
+//
 // Avoid GIO0, GPIO2, and GPIO15 because these control boot mode.
 // These correspond on an ESP8266 D1 Mini Pro to
 // D3, D4, and D8.
@@ -371,7 +371,6 @@ void setupBody() {
 			https.POST("");
 #  endif
 #endif
-		}
 
 #if defined Ian_debug3
 		scanNetworkSynchronous() ;
