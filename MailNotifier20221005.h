@@ -56,7 +56,27 @@
 //
 #include "ESP8266WiFi.h"
 
-//end of add your includes here.
+#include <vector>
+//end of add your includes here
+
+//add your function definitions for the project MailNotifier20221005 here
+
+// struct definitions added below.
+struct header {
+	char * headerDescription ;
+	char * name ;
+	char * value ;
+};
+
+struct request {
+	char * overallDescription ;
+	char * phoneNumDescription ;
+	char * phoneNum ;
+	char * deviceDescription ;
+	char * device ;
+	std::vector <struct header> headers ;
+};
+
 
 
 //add your function definitions for the project MailNotifier here
