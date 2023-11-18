@@ -193,7 +193,7 @@ IPAddress gateway(   0,   0,   0,   0) ; // 0.0.0.0 to indicate to
 IPAddress subnet (   0,   0,   0,   0) ; // use DHCP.
 IPAddress dns1   (   0,   0,   0,   0) ; // dns1 and dns2 will be set by DHCP.
 IPAddress dns2   (   0,   0,   0,   0) ; // Ian_debug4 will cause assigned
-                                         // addresses to be prnted.
+                                         // addresses to be printed.
 
 /*
 #elif defined Aiden
