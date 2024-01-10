@@ -33,6 +33,13 @@
  *
  */
 
+//
+// triggerRequest is given a value in
+// SSIDprivate.private or in
+// SSIDprivate.h
+// This define provides the parameters used by triggerRequest
+//
+
  #include <ESP8266HTTPClient.h>
  #include <WiFiClientSecureBearSSL.h>
 

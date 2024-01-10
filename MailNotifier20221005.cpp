@@ -2,7 +2,21 @@
 //
 // The following include is standard practice.
 //
+
 #include "MailNotifier20221005.h"
+
+#include <cstdio>
+#include <memory>
+
+#include "../../Sloeber_v4_4_1/Sloeber/arduinoPlugin/packages/esp8266/hardware/esp8266/3.0.2/cores/esp8266/core_esp8266_features.h"
+#include "../../Sloeber_v4_4_1/Sloeber/arduinoPlugin/packages/esp8266/hardware/esp8266/3.0.2/cores/esp8266/Esp.h"
+#include "../../Sloeber_v4_4_1/Sloeber/arduinoPlugin/packages/esp8266/hardware/esp8266/3.0.2/cores/esp8266/HardwareSerial.h"
+#include "../../Sloeber_v4_4_1/Sloeber/arduinoPlugin/packages/esp8266/hardware/esp8266/3.0.2/cores/esp8266/IPAddress.h"
+#include "../../Sloeber_v4_4_1/Sloeber/arduinoPlugin/packages/esp8266/hardware/esp8266/3.0.2/cores/esp8266/wl_definitions.h"
+#include "../../Sloeber_v4_4_1/Sloeber/arduinoPlugin/packages/esp8266/hardware/esp8266/3.0.2/cores/esp8266/WString.h"
+#include "../../Sloeber_v4_4_1/Sloeber/arduinoPlugin/packages/esp8266/hardware/esp8266/3.0.2/libraries/ESP8266WebServer/src/ESP8266WebServer-impl.h"
+#include "../../Sloeber_v4_4_1/Sloeber/arduinoPlugin/packages/esp8266/hardware/esp8266/3.0.2/libraries/ESP8266WiFi/src/ESP8266WiFiType.h"
+#include "../../Sloeber_v4_4_1/Sloeber/arduinoPlugin/packages/esp8266/hardware/esp8266/3.0.2/variants/d1_mini/pins_arduino.h"
 
 //
 // Ian_Channel < 0 OR Ian_Channel > 11 constitutes an error!
@@ -61,8 +75,8 @@
 //
 // Uncomment exactly one of these #define lines:
 //
-// #define Ian_debug4
- #define Ian_noDebug4
+ #define Ian_debug4
+// #define Ian_noDebug4
 
 //
 // Uncomment exactly one of these THREE #define lines:
@@ -76,6 +90,12 @@
 //
 // #define Ian_debug6
  #define Ian_noDebug6
+
+//
+// Uncomment exactly one of these #define lines:
+//
+ #define Ian_debug7
+// #define Ian_noDebug7
 
 #if defined Ian_debug4
 WiFiClient debug;
@@ -132,6 +152,9 @@ ADC_MODE(ADC_VCC) ;  // Self VCC Read Mode
 
 boolean success ;
 int     status  ;
+#if defined Ian_debug2
+		unsigned long connectionToPostStart ;
+#endif
 char requestBuffer[requestBufferSize] ;
 
 const double bVCalib = 0.00112016306998 ;
@@ -214,10 +237,29 @@ IPAddress dns2   (   0,   0,   0,   0) ; // dns1 and dns2 will be set by DHCP.
 
 #endif
 
+void setSecureClientSecurity(
+		const std::unique_ptr<BearSSL::WiFiClientSecure> &secureClient) {
+	//
+	// Ignore SSL certificate validation
+	//
+	secureClient->setInsecure();
+}
+
+void setupHeaders(const struct request &r, HTTPClient &https) {
+	/*================================================================*/
+	boolean first   = false ;
+	boolean replace = false ;
+	for (struct header h : r.headers) {
+		https.addHeader(h.name, h.value, first, replace);
+	}
+}
+
 void setupBody() {
+	/*====================================================================*/
 	for (byte i = 0; i < numberOfArrayElements(pinNumber); i++) {
 		pinMode(pinNumber[i], INPUT_PULLUP);
 	}
+	/*====================================================================*/
 	//
 	// Make unit a station, and connect to network.
 	//
@@ -265,28 +307,21 @@ void setupBody() {
 	executionMode = normalExecution ;
 
 #else
+	/*====================================================================*/
 	if (digitalRead(otaProgrammingIndicator) == normalExecution) {
 		executionMode = normalExecution;
 	} else {
 		executionMode = otaReprogrammingExecution;
 	}
+	/*====================================================================*/
 #endif
 
+//==============================================================================
+//==============================================================================
+//==============================================================================
+
 	if (executionMode == normalExecution) {
-		/*
-		 * Wanted to access
-		 *
-		 * https://maker.ifttt.com/trigger/{event}/with/key/<IFTTT_Service_key>
-		 *
-		 * to trigger ifttt.com to send a text to Ronni.
-		 *
-		 * {event} is Mail_Notifier
-		 *
-		 * so use
-		 *
-		 https://maker.ifttt.com/trigger/Mail_Notifier/with/key/<IFTTT_Service_key>
-		 *
-		 */
+
 		double batteryVoltage = ESP.getVcc() * bVCalib ;
 
 #if defined Ian_debug4
@@ -299,8 +334,7 @@ void setupBody() {
 		debug.printf("bVCalib is %.14f .\n", bVCalib) ;
 		debug.printf("Battery voltage is %f volts.\n", batteryVoltage) ;
 		debug.printf("Compiled on %s %s\n", __DATE__, __TIME__) ;
-		debug.printf("triggerRequest: %s\nbatteryVoltage: %#.2f\n",
-				triggerRequest, batteryVoltage) ;
+		debug.printf("batteryVoltage: %#.2f\n", batteryVoltage) ;
 		debug.printf("Execution mode is normal.\n") ;
 		debug.printf("Assigned address is %s .\n",
 				WiFi.localIP().toString().c_str() ) ;
@@ -315,62 +349,109 @@ void setupBody() {
 //		debug.printf("EOF_FOR_LOGGER\n") ;
 //		debug.flush() ;
 #endif
-		//
-		//
-		//
-		// Define a secure client.
-		//
-		std::unique_ptr<BearSSL::WiFiClientSecure>
-		  client(new BearSSL::WiFiClientSecure) ;
-		// Ignore SSL certificate validation
-		client->setInsecure();
-		// Create an HTTPClient instance for our POST request.
-		HTTPClient https;
 
-		// Set up the message to be sent.
-		//
-		snprintf(
-				requestBuffer,
-				requestBufferSize,
-				triggerRequest,
-				batteryVoltage
-				) ;
-		//Initializing HTTPS communication using the secure client
+		/*====================================================================*/
+		std::vector <struct request> requests = {
+				{
+						(char *)"Ronda's phone texting to Ian's phone",
+						(char *)"Ian's phone number",
+						(char *)"<omitted>",
+						(char *)"Ronda's Device",
+						(char *)"<Device intentionally omitted>",
+						{
+								{
+										(char *)"Ronda's Access Token",
+										(char *)"Access-Token",
+										(char *)"<Access Token Intentionally Omitted>"
+								},
+								{
+										(char *)"Data payload is JSON",
+										(char *)"Content-Type",
+										(char *)"application/json"
+								}
+						}
+				}
+		}
+		;
+		/*====================================================================*/
+		for (struct request r : requests) {
+			//
+			// Create a secure client.
+			//
+			std::unique_ptr<BearSSL::WiFiClientSecure>
+			  secureClient(new BearSSL::WiFiClientSecure) ;
+			//
+			// Set up security.
+			//
+			setSecureClientSecurity(secureClient);
+			//
+			// Create an HTTPClient instance for our POST request.
+			//
+			HTTPClient https;
+			//
+			// Set up the headers
+			//
+			setupHeaders(r, https);
+			//
+			// Set up the message to be sent.
+			//
+			snprintf(
+					requestBuffer,
+					requestBufferSize,
+					triggerRequest,
+					TRIGGER_PARAMS) ;
+			//
+			//Initializing HTTPS communication using the secure client
+			//
+			// |Ian_debug4 |Ian_debug6 |Result
+			// |========== |========== |======
+			// |NOT defined|NOT defined|OK
+			// |NOT defined|    defined|OK
+			// |    defined|NOT defined|OK
+			// |    defined|    defined|OK
+			//
 #if defined Ian_debug4
-		debug.print("[HTTPS] begin...\n");
-		if (https.begin(*client, requestBuffer)) {  // HTTPS
-			debug.print("NOW going to ");
-			debug.println(requestBuffer);
+			debug.print("[HTTPS] begin...\n");
+			if (https.begin(*secureClient, requestBuffer)) {  // HTTPS
+				debug.print("NOW going to ");
+				debug.println(requestBuffer);
+
 #  if !defined Ian_debug6
-			debug.print("[HTTPS] POST...\n");
-			// start connection and send HTTP header
-			int httpCode = https.POST("");
-			//
-			//
-			// HTTP header has been sent and
-			// Server response header has been handled internally.
-			//
-			debug.printf("[HTTPS] POST... code: %d\n", httpCode);
-			// file found at server
-			if (
-					httpCode == HTTP_CODE_OK ||
-					httpCode == HTTP_CODE_MOVED_PERMANENTLY)
-			{
-				debug.println(https.getString());
-			} else {
-				debug.printf("[HTTPS] POST... failed, error: %s\n",
-						https.errorToString(httpCode).c_str());
-				debug.println(https.getString());
+				debug.print("[HTTPS] POST...\n");
+				// start connection and send HTTP header
+				int httpCode = https.POST("");
+				//
+				//
+				// HTTP header has been sent and
+				// Server response header has been handled internally.
+				//
+				debug.printf("[HTTPS] POST... code: %d\n", httpCode);
+				// file found at server
+				if (
+						httpCode == HTTP_CODE_OK ||
+						httpCode == HTTP_CODE_MOVED_PERMANENTLY)
+				{
+					debug.println(https.getString());
+				} else {
+					debug.printf("[HTTPS] POST... failed, error: %s\n",
+							https.errorToString(httpCode).c_str());
+					debug.println(https.getString());
+				}
+#  endif // if !defined Ian_debug6
+
+				debug.printf("EOF_FOR_LOGGER\n") ;
+				debug.flush() ;
 			}
-#  endif
-			debug.printf("EOF_FOR_LOGGER\n") ;
-			debug.flush() ;
-#else
-			https.begin(*client, requestBuffer) ;  // HTTPS
-#  if !defined Ian_debug6
-			https.POST("");
-#  endif
-#endif
+
+#else  // if defined Ian_debug4
+				https.begin(*secureClient, requestBuffer) ;  // HTTPS
+#  if defined Ian_debug6
+				/* Do Nothing */
+#  else  // if defined Ian_debug6
+				https.POST("");
+#  endif  // if defined Ian_debug6
+#endif  // if defined Ian_debug4
+			}
 
 #if defined Ian_debug3
 		scanNetworkSynchronous() ;
@@ -378,15 +459,25 @@ void setupBody() {
 
 		ESP.deepSleepInstant(0, WAKE_RF_DEFAULT);
 		//
+		//
 		// Above is normal execution mode (notification), and
 		// below is Over The Air (OTA) reprogramming.
 		//
-	} else {
+		//
+	}  //  end of if (executionMode == normalExecution)
+
+//==============================================================================
+//==============================================================================
+//==============================================================================
+
+		else
+		{ // opposite case of if (executionMode == normalExecution)
+		//
 		// REPROGRAM OTA (Over The Air) using a web browser !
 		//		Serial.printf("\n\nOTA Reprogramming via a web browser !\n\n\n") ;
 		//                   1         2         3         4
 		//          1234567890123456789012345678901234567890
-
+		//
 #if defined Ian_debug4
 		debug.connect(Ian_LocalDebugAddress, Ian_LocalDebugSocket);
 
@@ -423,12 +514,12 @@ void setupBody() {
 		httpServer.onNotFound([]() {
 			httpServer.send(200, "text/plain", "Go to /update.");
 		}
-		);
+		) ;
 		httpServer.begin();
 		MDNS.addService("http", "tcp", 80);
 		Serial.printf(updateMessage, WiFi.localIP().toString().c_str());
-	}
-}
+	}  // end of opposite case of if (executionMode == normalExecution)
+}  // end of setupBody
 
 void loopBody() {
 	//
@@ -623,21 +714,21 @@ void ConnectStationToNetwork(
 		){
 			yield() ;
 		}
-		unsigned long connectionEnd = millis() ;
-		unsigned long connectionTime = connectionEnd - connectionStart ;
-		if (connectionTime < CONNECTION_WAIT_MILLIS) {
+#if defined Ian_debug2
+		connectionToPostStart = millis() ;
+#endif
+		if ( (millis()-connectionStart) < CONNECTION_WAIT_MILLIS) {
 #if defined Ian_debug2
 			Serial.printf(
 				"DEBUG >>>>>>>>  Connection took %lu milliseconds.\n",
-				connectionTime
+				millis()-connectionStart
 			) ;
-// https://www.arduino.cc/en/Reference/WiFiRSSI
-			#endif
+#endif
 		} else {
 #if defined Ian_debug2
 			Serial.printf(
 				"DEBUG >>>>>>>>  Failed to connect in %lu milliseconds.\n",
-				connectionTime
+				millis()-connectionStart
 			) ;
 #endif
 			WiFi.disconnect() ;  //  Reset and try again.
