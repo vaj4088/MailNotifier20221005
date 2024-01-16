@@ -254,6 +254,13 @@ void setupHeaders(const struct request &r, HTTPClient &https) {
 	}
 }
 
+void endTransaction(
+		const std::unique_ptr<BearSSL::WiFiClientSecure> &secureClient,
+		HTTPClient &https) {
+	https.end();
+	secureClient->stop();
+}
+
 void setupBody() {
 	/*====================================================================*/
 	for (byte i = 0; i < numberOfArrayElements(pinNumber); i++) {
@@ -375,6 +382,12 @@ void setupBody() {
 		;
 		/*====================================================================*/
 		for (struct request r : requests) {
+			///////////////////////////////////////////////////////////
+			//                                                       //
+			//Initiating HTTPS communication using the secure client //
+			//                                                       //
+			///////////////////////////////////////////////////////////
+
 			//
 			// Create a secure client.
 			//
@@ -400,58 +413,52 @@ void setupBody() {
 					requestBufferSize,
 					triggerRequest,
 					TRIGGER_PARAMS) ;
-			//
-			//Initializing HTTPS communication using the secure client
-			//
-			// |Ian_debug4 |Ian_debug6 |Result
-			// |========== |========== |======
-			// |NOT defined|NOT defined|OK
-			// |NOT defined|    defined|OK
-			// |    defined|NOT defined|OK
-			// |    defined|    defined|OK
-			//
 #if defined Ian_debug4
-			debug.print("[HTTPS] begin...\n");
-			if (https.begin(*secureClient, requestBuffer)) {  // HTTPS
-				debug.print("NOW going to ");
-				debug.println(requestBuffer);
-
-#  if !defined Ian_debug6
-				debug.print("[HTTPS] POST...\n");
-				// start connection and send HTTP header
-				int httpCode = https.POST("");
+			debug.print("[HTTPS] begin...\n") ;
+#endif
+			//
+			// The following line does unknown things
+			// and connects https and secureClient .
+			//
+			if (https.begin(*secureClient, TRIGGER_URL)) {
+				// HTTPS start connection and send HTTP header
+#if defined Ian_debug4
+				debug.print("NOW going to (or skipping) ") ;
+				debug.println(TRIGGER_URL) ;
+				debug.printf("[HTTPS] POST...\n") ;
+#endif
+				int httpCode = HTTP_CODE_OK ; // Initialize to passing value.
+#if defined Ian_debug6
+				Serial.println("Skipping POST.") ;
+#else
+				int httpCode = https.POST(requestBuffer) ;
+#endif
 				//
 				//
+				// If POST has occurred, then
 				// HTTP header has been sent and
 				// Server response header has been handled internally.
 				//
+#if defined Ian_debug4
 				debug.printf("[HTTPS] POST... code: %d\n", httpCode);
 				// file found at server
 				if (
 						httpCode == HTTP_CODE_OK ||
 						httpCode == HTTP_CODE_MOVED_PERMANENTLY)
 				{
-					debug.println(https.getString());
+					/* Do nothing. */
 				} else {
 					debug.printf("[HTTPS] POST... failed, error: %s\n",
 							https.errorToString(httpCode).c_str());
-					debug.println(https.getString());
 				}
-#  endif // if !defined Ian_debug6
-
+				debug.println(https.getString());
 				debug.printf("EOF_FOR_LOGGER\n") ;
 				debug.flush() ;
-			}
+#endif
 
-#else  // if defined Ian_debug4
-				https.begin(*secureClient, requestBuffer) ;  // HTTPS
-#  if defined Ian_debug6
-				/* Do Nothing */
-#  else  // if defined Ian_debug6
-				https.POST("");
-#  endif  // if defined Ian_debug6
-#endif  // if defined Ian_debug4
-			}
+			} // end of if (https.begin(*secureClient, TRIGGER_URL))
+				endTransaction(secureClient, https);
+		} // end of for (struct request r : requests)
 
 #if defined Ian_debug3
 		scanNetworkSynchronous() ;
